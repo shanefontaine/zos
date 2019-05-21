@@ -1,6 +1,7 @@
 import pickBy from 'lodash.pickby';
 import pick from 'lodash.pick';
 import { FileSystem, Contracts } from 'zos-lib';
+import { CompilerOptions } from '../../compiler/solidity/SolidityContractsCompiler';
 
 const Truffle = {
 
@@ -51,11 +52,17 @@ const Truffle = {
     }
   },
 
-  getCompilerInfo(): { version?: string, optimizer?: boolean, optimizerRuns?: number } {
+  getCompilerInfo(): CompilerOptions {
     const config = this.getConfig();
     const { compilers: { solc: { version, settings } } } = config;
-    const { enabled: optimizer, runs: optimizerRuns } = settings.optimizer;
-    return { version, optimizer, optimizerRuns };
+    const { evmVersion, optimizer } = settings;
+    const { enabled, runs } = optimizer;
+
+    return {
+      version,
+      evmVersion,
+      optimizer: { enabled, runs }
+    };
   },
 
   getNetworkNamesFromConfig(): string[] | null {
