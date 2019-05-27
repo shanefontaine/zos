@@ -3,11 +3,13 @@ declare module 'solc' {
   const version: Compiler['version'];
   const loadRemoteVersion: Compiler['loadRemoteVersion'];
   const compile: Compiler['compile'];
+  const setupMethods: Compiler['setupMethods'];
 
   export interface Compiler {
     version(): string;
     loadRemoteVersion(version: string, cb: (error: any, compiler: Compiler) => void);
     compile(input: string, readCb: (dependency: any) => void);
+    setupMethods(input: any): Compiler;
   }
 
   export interface CompilerOptimizerOptions {
