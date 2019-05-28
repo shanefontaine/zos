@@ -8,7 +8,7 @@ import kitConfigSchema from '../files/kit-config.schema.json';
 import stdout from '../../utils/stdout';
 import patch from '../../utils/patch';
 import child from '../../utils/child';
-import Spinner from '../../utils/spinner';
+import Spinners from '../../utils/spinner';
 
 const simpleGit = patch('simple-git/promise');
 
@@ -24,9 +24,9 @@ export default class KitController {
     const files = (await readdir(workingDirPath)).filter(file => file !== '.zos.lock');
     if (files.length > 0) throw Error(`Unable to unpack ${url} in the current directory, as it must be empty.`);
 
-    let spinner = new Spinner(`Downloading kit from ${url}`);
+    const spinners = new Spinners();
     try {
-      spinner.start();
+      spinners.start('downloading-kit', `Downloading kit from ${url}`);
       const git = simpleGit(workingDirPath);
       await git.init();
       await git.addRemote('origin', url);
@@ -43,20 +43,19 @@ export default class KitController {
           ...config.files,
         ]);
       }
-      spinner.succeed();
+      spinners.succeed('downloading-kit');
 
-      spinner = new Spinner('Unpacking kit');
-      spinner.start();
+      spinners.start('unpacking-kit', 'Unpacking kit');
       // always delete .git folder
       await remove(path.join(workingDirPath, '.git'));
       // run kit commands like `npm install`
       await exec(config.hooks['post-unpack']);
-      spinner.succeed();
+      spinners.succeed('unpacking-kit');
 
       stdout('The kit is ready to use. Amazing!');
       stdout(config.message);
     } catch(e) {
-      spinner.fail();
+      spinners.stopAll('fail');
       // TODO: remove all files from directory on fail except .zos.lock
       e.message = `Failed to download and unpack kit from ${url}. Details: ${e.message}`;
       throw e;
