@@ -203,12 +203,8 @@ jobs:
     environment: { NETWORK: "geth-dev-hdwallet" }
 
   integration-cli-zepkit:
+    <<: *integration
     environment: { NETWORK: "development" }
-    working_directory: ~/zos
-    docker:
-      - image: circleci/node:10.13
-      - image: ethereum/client-go:release-1.8
-        command: "--dev --dev.period=1 --rpc --rpcport=8545 --rpcaddr=localhost --networkid=9955"
     steps:
       - checkout
       - restore-all-caches
