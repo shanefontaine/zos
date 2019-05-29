@@ -2,6 +2,7 @@ import pickBy from 'lodash.pickby';
 import pick from 'lodash.pick';
 import { FileSystem, Contracts } from 'zos-lib';
 import { CompilerOptions } from '../../compiler/solidity/SolidityContractsCompiler';
+import { tryFunc } from '../../../utils/try';
 
 const Truffle = {
 
@@ -12,9 +13,7 @@ const Truffle = {
   },
 
   isTruffleProject(path: string = process.cwd()): boolean {
-    const truffleDir = `${path}/node_modules/truffle`;
-    const existsTruffleDependency = FileSystem.exists(truffleDir);
-    return Truffle.existsTruffleConfig(path) && existsTruffleDependency;
+    return Truffle.existsTruffleConfig(path);
   },
 
   validateAndLoadNetworkConfig(network: string, force: boolean = false, path: string = process.cwd()): void {
