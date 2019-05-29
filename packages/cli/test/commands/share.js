@@ -81,8 +81,10 @@ exports.stubCommands = function () {
     this.sendTx = sinon.stub(sendTx, 'default')
     this.call = sinon.stub(call, 'default')
 
-    this.compiler = sinon.stub(Compiler, 'call').callsFake(() => null)
-    this.errorHandler = sinon.stub(ErrorHandler.prototype, 'call').callsFake(() => null)
+    this.compiler = sinon.stub(Compiler, 'call')
+    this.truffleCompiler = sinon.stub(Compiler, 'compileWithTruffle')
+    this.solcCompiler = sinon.stub(Compiler, 'compileWithSolc')
+    this.errorHandler = sinon.stub(ErrorHandler.prototype, 'call')
     this.initializer = sinon.stub(ConfigVariablesInitializer, 'initNetworkConfiguration').callsFake(function (options) {
       ConfigVariablesInitializer.initStaticConfiguration()
       const { network, from } = Session.getOptions(options)
@@ -104,8 +106,13 @@ exports.stubCommands = function () {
 exports.itShouldParse = function (name, cmd, args, cb) {
   it(name, function (done) {
     this[cmd].onFirstCall().callsFake(() => {
-      cb(this[cmd])
-      done()
+      let err;
+      try {
+        cb(this[cmd])
+      } catch(e) {
+        err = e;
+      }
+      done(err)
     })
     args = args.split(' ')
     args.unshift('node')
