@@ -44,44 +44,19 @@ contract('Truffle', () => {
   })
 
   describe('isTruffleProject', function () {
-    describe('when there is a truffle dependency', function () {
+    describe('when there is a truffle config file', function () {
       beforeEach('create truffle config file', function () {
-        FileSystem.createDir(`${testDir}/node_modules`)
-        FileSystem.createDir(`${testDir}/node_modules/truffle`)
+        FileSystem.write(`${testDir}/truffle-config.js`, 'dummy')
       })
 
-      describe('when there is a truffle config file', function () {
-        beforeEach('create truffle config file', function () {
-          FileSystem.write(`${testDir}/truffle-config.js`, 'dummy')
-        })
-
-        it('returns true', function () {
-          Truffle.isTruffleProject(testDir).should.be.true
-        })
-      })
-
-      describe('when there is no truffle config file', function () {
-        it('returns false', function () {
-          Truffle.isTruffleProject(testDir).should.be.false
-        })
+      it('returns true', function () {
+        Truffle.isTruffleProject(testDir).should.be.true
       })
     })
 
-    describe('when there is no truffle dependency', function () {
-      describe('when there is a truffle config file', function () {
-        beforeEach('create truffle config file', function () {
-          FileSystem.write(`${testDir}/truffle-config.js`, 'dummy')
-        })
-
-        it('returns false', function () {
-          Truffle.isTruffleProject(testDir).should.be.false
-        })
-      })
-
-      describe('when there is no truffle config file', function () {
-        it('returns false', function () {
-          Truffle.isTruffleProject(testDir).should.be.false
-        })
+    describe('when there is no truffle config file', function () {
+      it('returns false', function () {
+        Truffle.isTruffleProject(testDir).should.be.false
       })
     })
   })
