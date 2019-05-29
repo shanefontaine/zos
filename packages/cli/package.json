@@ -89,6 +89,7 @@
     "rlp": "^2.2.3",
     "semver": "^5.5.0",
     "solc-wrapper": "^0.5.8",
+    "solidity-parser-antlr": "^0.4.2",
     "truffle-config": "1.1.2",
     "web3": "1.0.0-beta.37",
     "web3-provider-engine": "14.0.6",
